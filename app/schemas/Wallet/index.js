@@ -1,4 +1,3 @@
-const { Decimal128 } = require('bson');
 const mongoose = require('mongoose');
 
 const Wallet = new mongoose.Schema(
@@ -8,7 +7,7 @@ const Wallet = new mongoose.Schema(
       required: true,
     },
     balance: {
-      type: Decimal128,
+      type: Number,
       default: 0.0,
     },
     date: {

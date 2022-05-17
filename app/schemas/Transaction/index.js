@@ -1,26 +1,21 @@
-const { Decimal128 } = require('bson');
 const mongoose = require('mongoose');
 
 const Transaction = new mongoose.Schema(
   {
-    walletId: {
-      type: String,
+    wallet: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'wallets',
       required: true,
     },
-    transactionId: {
-      type: String,
-      required: true,
-    },
-    walletBalance: {
-      type: Decimal128,
+    balance: {
+      type: Number,
       required: true,
     },
     description: {
       type: String,
-      required: true,
     },
     amount: {
-      type: Decimal128,
+      type: Number,
       required: true,
     },
     type: {
