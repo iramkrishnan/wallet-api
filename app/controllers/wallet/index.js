@@ -2,12 +2,13 @@ const WalletModel = require('../../models/Wallet');
 const TransactionModel = require('../../models/Transaction');
 const responseUtility = require('../../utils/responseUtility');
 const { DataNotFoundException } = require('../../utils/exceptions');
+const { roundDecimal } = require('../../utils/number');
 
 const setupWallet = async (req, res, next) => {
   try {
     const wallet = await WalletModel.create({
       name: req.body.name,
-      balance: req.body.balance,
+      balance: roundDecimal(req.body.balance),
       date: new Date(),
     });
 
@@ -16,7 +17,7 @@ const setupWallet = async (req, res, next) => {
     const { _id: transactionId } = await TransactionModel.create({
       wallet: walletId,
       balance,
-      amount: balance,
+      amount: roundDecimal(balance),
       type: 'CREDIT',
       date: new Date(),
     });

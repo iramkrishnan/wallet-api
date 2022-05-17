@@ -45,7 +45,8 @@ const getTransactions = async (req, res, next) => {
         wallet: walletId,
       },
       skip,
-      limit
+      limit,
+      { date: -1 }
     );
 
     const response = transactions.map((t) => ({
