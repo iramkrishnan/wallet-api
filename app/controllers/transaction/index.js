@@ -7,7 +7,6 @@ const { roundDecimal } = require('../../utils/number');
 const addTransaction = async (req, res, next) => {
   const { amount, description } = req.body;
   const { walletId } = req.params;
-
   try {
     const wallet = await WalletModel.readOneByKey({ _id: walletId });
     if (!wallet) throw new DataNotFoundException('Wallet Not Found');
@@ -38,6 +37,33 @@ const addTransaction = async (req, res, next) => {
   }
 };
 
+const getTransactions = async (req, res, next) => {
+  const { walletId, skip, limit } = req.query;
+  try {
+    const transactions = await TransactionModel.lazyRead(
+      {
+        wallet: walletId,
+      },
+      skip,
+      limit
+    );
+
+    const response = transactions.map((t) => ({
+      id: t._id,
+      walletId: t.wallet,
+      amount: t.amount,
+      balance: t.balance,
+      description: t.description,
+      date: t.date,
+      type: t.type,
+    }));
+    return res.status(200).json(responseUtility.build('SUCCESS', response));
+  } catch (err) {
+    return next(err);
+  }
+};
+
 module.exports = {
   addTransaction,
+  getTransactions,
 };
