@@ -2,8 +2,7 @@ const WalletModel = require('../../models/Wallet');
 const TransactionModel = require('../../models/Transaction');
 const responseUtility = require('../../utils/responseUtility');
 const { DataNotFoundException } = require('../../utils/exceptions');
-const { roundDecimal } = require('../../utils/number');
-const { generateUuid } = require('../../utils/common');
+const { roundDecimal, generateUuid } = require('../../utils/common');
 
 const addTransaction = async (req, res, next) => {
   const { amount, description } = req.body;
