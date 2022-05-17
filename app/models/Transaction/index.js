@@ -151,3 +151,15 @@ exports.aggregateQuery = (aggregateQuery) => {
       });
   });
 };
+
+exports.lazyRead = (query = {}, skip, limit, sortBy = {}) => {
+  return new Promise((resolve, reject) => {
+    Transaction.find(query)
+      .sort(sortBy)
+      .skip(skip)
+      .limit(limit)
+      .exec((err, result) => {
+        err ? reject(err) : resolve(result);
+      });
+  });
+};
