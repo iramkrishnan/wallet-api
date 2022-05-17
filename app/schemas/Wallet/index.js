@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const Wallet = new mongoose.Schema(
   {
+    walletId: {
+      type: String,
+      required: true,
+    },
     name: {
       type: String,
       required: true,

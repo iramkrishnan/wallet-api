@@ -3,19 +3,22 @@ const TransactionModel = require('../../models/Transaction');
 const responseUtility = require('../../utils/responseUtility');
 const { DataNotFoundException } = require('../../utils/exceptions');
 const { roundDecimal } = require('../../utils/number');
+const { generateUuid } = require('../../utils/common');
 
 const setupWallet = async (req, res, next) => {
   try {
     const wallet = await WalletModel.create({
+      walletId: generateUuid(),
       name: req.body.name,
       balance: roundDecimal(req.body.balance),
       date: new Date(),
     });
 
-    const { _id: walletId, balance, name, date } = wallet;
+    const { walletId, name, balance, date } = wallet;
 
-    const { _id: transactionId } = await TransactionModel.create({
-      wallet: walletId,
+    const { transactionId } = await TransactionModel.create({
+      walletId,
+      transactionId: generateUuid(),
       balance,
       amount: roundDecimal(balance),
       type: 'CREDIT',
@@ -39,10 +42,10 @@ const setupWallet = async (req, res, next) => {
 const getWalletDetails = async (req, res, next) => {
   const { id } = req.params;
   try {
-    const wallet = await WalletModel.readOneByKey({ _id: id });
+    const wallet = await WalletModel.readOneByKey({ walletId: id });
     if (!wallet) throw new DataNotFoundException('Wallet Not Found');
 
-    const { _id: walletId, balance, name, date } = wallet;
+    const { walletId, balance, name, date } = wallet;
     const response = {
       id: walletId,
       balance,

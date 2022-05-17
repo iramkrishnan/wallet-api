@@ -3,16 +3,18 @@ const TransactionModel = require('../../models/Transaction');
 const responseUtility = require('../../utils/responseUtility');
 const { DataNotFoundException } = require('../../utils/exceptions');
 const { roundDecimal } = require('../../utils/number');
+const { generateUuid } = require('../../utils/common');
 
 const addTransaction = async (req, res, next) => {
   const { amount, description } = req.body;
   const { walletId } = req.params;
   try {
-    const wallet = await WalletModel.readOneByKey({ _id: walletId });
+    const wallet = await WalletModel.readOneByKey({ walletId });
     if (!wallet) throw new DataNotFoundException('Wallet Not Found');
 
-    const transaction = await TransactionModel.create({
-      wallet: walletId,
+    const { transactionId } = await TransactionModel.create({
+      walletId,
+      transactionId: generateUuid(),
       balance: roundDecimal(wallet.balance + amount),
       description,
       amount: Math.abs(amount),
@@ -21,14 +23,14 @@ const addTransaction = async (req, res, next) => {
     });
 
     const updatedWallet = await WalletModel.update(
-      { _id: walletId },
+      { walletId },
       { balance: roundDecimal(wallet.balance + amount) },
       { new: true }
     );
 
     const response = {
       balance: updatedWallet.balance,
-      transactionId: transaction._id,
+      transactionId,
     };
 
     return res.status(200).json(responseUtility.build('SUCCESS', response));
@@ -42,7 +44,7 @@ const getTransactions = async (req, res, next) => {
   try {
     const transactions = await TransactionModel.lazyRead(
       {
-        wallet: walletId,
+        walletId,
       },
       skip,
       limit,
@@ -50,8 +52,8 @@ const getTransactions = async (req, res, next) => {
     );
 
     const response = transactions.map((t) => ({
-      id: t._id,
-      walletId: t.wallet,
+      id: t.transactionId,
+      walletId: t.walletId,
       amount: t.amount,
       balance: t.balance,
       description: t.description,
