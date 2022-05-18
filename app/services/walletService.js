@@ -17,6 +17,7 @@ const setupWallet = async (body) => {
     walletId,
     transactionId: generateUuid(),
     balance,
+    description: 'Setup',
     amount: roundDecimal(balance),
     type: 'CREDIT',
     date: new Date(),
