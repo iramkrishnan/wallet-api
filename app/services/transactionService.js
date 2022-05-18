@@ -1,11 +1,19 @@
 const WalletModel = require('../models/Wallet');
 const TransactionModel = require('../models/Transaction');
-const { DataNotFoundException, Unauthorized } = require('../utils/exceptions');
+const {
+  DataNotFoundException,
+  Unauthorized,
+  DataConstraintViolation,
+} = require('../utils/exceptions');
 const { roundDecimal, generateUuid } = require('../utils/common');
 
 const addTransaction = async ({ amount, description, walletId }) => {
+  if (Math.abs(amount) === 0)
+    throw new DataConstraintViolation('Amount cannot be 0');
+
   const wallet = await WalletModel.readOneByKey({ walletId });
   if (!wallet) throw new DataNotFoundException('Wallet Not Found');
+
   if (amount < 0 && wallet.balance < Math.abs(amount))
     throw new Unauthorized('Insufficent Balance');
 
