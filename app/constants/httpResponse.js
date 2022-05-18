@@ -8,6 +8,10 @@ const httpResponse = {
       message: 'Validation Error',
       statusCode: 400,
     },
+    ERROR_UNAUTHORIZED: {
+      message: 'Unauthorized Access',
+      statusCode: 401,
+    },
     ERROR_NO_DATA: {
       message: 'No Data Available',
       statusCode: 404,

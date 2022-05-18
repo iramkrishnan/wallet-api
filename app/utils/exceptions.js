@@ -29,8 +29,15 @@ class DataConstraintViolation extends ApplicationException {
   }
 }
 
+class Unauthorized extends ApplicationException {
+  constructor(message) {
+    super('ERROR_UNAUTHORIZED', message);
+  }
+}
+
 module.exports = {
   DataNotFoundException,
   ValidationFailed,
+  Unauthorized,
   DataConstraintViolation,
 };
