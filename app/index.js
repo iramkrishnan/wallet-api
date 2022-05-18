@@ -4,6 +4,8 @@ require('./schemas');
 require('dotenv').config();
 
 const app = express();
+const cors = require('cors');
+app.use(cors());
 const server = require('http').Server(app);
 const routes = require('./routes');
 const { errorHandler, handle404 } = require(`./middlewares/errorHandler`);
